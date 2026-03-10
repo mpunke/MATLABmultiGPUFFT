@@ -64,7 +64,7 @@ Maik Punke
 Direct contributions to the code base:
 
 * Maik Punke (@mpunke)
-* Marco Salvalaglio (@lancon)
+* Marco Salvalaglio (@marcosalvalaglio)
 
 Related projects
 ----------------
