@@ -23,11 +23,11 @@ Running the code
 ------------
 Download the repository, make sure NVIDIA GPUs are available (at least two), then run the corresponding matlab scripts:
 
-* For a 2D pseudo-spectral solver of the Phase-Field Crystal Equation (underlying triangular symmetry), resulting in a dendritic growth morphology as visualized in the Figure 2(a), change directory to singleFFT_multiGPU_2D and run in MATLAB (at least two and maximal eight NVIDIA GPUs with latest driver updates must be available):
+* For a 2D pseudo-spectral solver of the Phase-Field Crystal Equation (underlying triangular symmetry), resulting in a dendritic growth morphology as visualized in the Figure 2(a), change directory to `singleFFT_multiGPU_2D` and run in MATLAB (at least two and maximal eight NVIDIA GPUs with latest driver updates must be available):
 
-.. code::
-
+ ```python
   singleFFT_multiGPU_2D.m
+```
 
 * For a 3D pseudo-spectral solver of the Phase-Field Crystal Equation (underlying fcc symmetry), resulting in polycrystalline coarsening, change directory to singleFFT_multiGPU_3D and run in MATLAB (at least two and maximal eight NVIDIA GPUs with latest driver updates must be available):
 
