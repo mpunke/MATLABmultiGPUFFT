@@ -1,22 +1,14 @@
 Multi-GPU fast Fourier transforms in MATLAB (for large-scale phase-field crystal simulations)
 ======================================================
 
-.. image:: https://img.shields.io/pypi/v/pyphot.svg
-    :target: https://pypi.org/project/pyphot/
+.[![PyPI version](https://img.shields.io/pypi/v/optigob.svg)](https://pypi.org/project/optigob/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Versions](https://img.shields.io/pypi/pyversions/optigob.svg)](https://pypi.org/project/optigob/)
+[![Documentation Status](https://readthedocs.org/projects/optigob/badge/?version=latest)](https://optigob.readthedocs.io/en/latest/?badge=latest)
 
-.. image:: https://zenodo.org/badge/70060728.svg
-   :target: https://zenodo.org/badge/latestdoi/70060728
+[GitHub](https://github.com/colmduff/OptiGob) |
+[Documentation](https://optigob.readthedocs.io/en/latest/) |
 
-.. image:: https://static.pepy.tech/badge/pyphot
-   :target: https://pepy.tech/project/pyphot
-
-.. image:: https://static.pepy.tech/badge/pyphot/month
-   :target: https://pepy.tech/project/pyphot
-
-.. image:: https://img.shields.io/badge/python-3.9,_3.10,_3.11,_3.12,_3.13,_3.14-blue.svg
-
-.. image:: https://joss.theoj.org/papers/10.21105/joss.08814/status.svg
-   :target: https://doi.org/10.21105/joss.08814
 
 We present a MATLAB-based framework for fast Fourier transforms on multiple GPUs for large-scale numerical simulations using the pseudospectral Fourier method. The software implements two complementary multi-GPU strategies that overcome single-GPU memory limitations and accelerate spectral solvers. This approach is motivated by and applied to phase-field crystal (PFC) models, which are governed by tenth-order partial differential equations, require fine spatial resolution, and are typically formulated in periodic domains. Our resulting numerical framework achieves significant speedups, approximately sixfold for standard PFC simulations and up to sixtyfold for multiphysics extensions, compared to a purely CPU-based implementation running on hundreds of cores.
 
