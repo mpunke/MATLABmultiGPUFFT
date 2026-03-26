@@ -187,7 +187,8 @@ spmd %parallel GPU session (4 GPUs)
     for  n=1:n_timeSteps %time iteration
         if spmdIndex==1 %GPU1 holding psi
             %%semi-implicit time step update of psi
-            psiF = (psiF+dt*(lap.*fftn(psi.^3)-fftn(v1.*ifftn(k.*psiF)+v2.*ifftn(l.*psiF)+v3IF.*ifftn(m.*psiF))))./(1-dt*lin);
+            psiF = (psiF+dt*(lap.*fftn(psi.^3)-fftn(v1.*ifftn(k.*psiF)+ ...
+                   v2.*ifftn(l.*psiF)+v3IF.*ifftn(m.*psiF))))./(1-dt*lin);
             psi = ifftn(psiF);
             %%send psi to GPU2...GPU4
             spmdSend(psi,[2:4],2); 
@@ -200,7 +201,8 @@ spmd %parallel GPU session (4 GPUs)
             %receive psi from GPU1
             psi = spmdReceive(1,2);
             %%fully-implicit time step update of v1
-            v1F = (v1F-dt/rho0 .*cg.*fftn(psi.*ifftn(k.*(fftn(psi.^3) + op.*fftn(psi)))))
+            v1F = (v1F-dt/rho0 .*cg.*fftn(psi.*ifftn(k.*(fftn(psi.^3) + ...
+                  op.*fftn(psi))))) ...
                 ./(1-deltatEuler/rho0.*.GammaS.*lap));
             v1 = ifftn(v1F);
             %send v1 to GPU1
@@ -210,7 +212,8 @@ spmd %parallel GPU session (4 GPUs)
             %receive psi from GPU1
             psi = spmdReceive(1,2);
             %%fully-implicit time step update of v2
-            v2F = (v2F-dt/rho0 .*cg.*fftn(psi.*ifftn(l.*(fftn(psi.^3) + op.*fftn(psi)))))
+            v2F = (v2F-dt/rho0 .*cg.*fftn(psi.*ifftn(l.*(fftn(psi.^3) + ...
+                  op.*fftn(psi))))) ...
                 ./(1-deltatEuler/rho0.*.GammaS.*lap));
             v2 = ifftn(v2F);
             %send v2 to GPU1
@@ -220,7 +223,8 @@ spmd %parallel GPU session (4 GPUs)
             %receive psi from GPU1
             psi = spmdReceive(1,2);
             %%fully-implicit time step update of v3
-            v3F = (v3F-dt/rho0 .*cg.*fftn(psi.*ifftn(m.*(fftn(psi.^3) + op.*fftn(psi)))))
+            v3F = (v3F-dt/rho0 .*cg.*fftn(psi.*ifftn(m.*(fftn(psi.^3) + ...
+                  op.*fftn(psi))))) ...
                 ./(1-deltatEuler/rho0.*.GammaS.*lap));
             v3 = ifftn(v3F);
             %send v3 to GPU1
