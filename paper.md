@@ -1,5 +1,5 @@
 ---
-title: 'Gala: A Python package for galactic dynamics'
+title: 'Multi-GPU fast Fourier transforms in MATLAB \\ for large-scale phase-field crystal simulations'
 tags:
   - Python
   - astronomy
