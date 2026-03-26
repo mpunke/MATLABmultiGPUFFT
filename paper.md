@@ -117,6 +117,116 @@ We distribute the fields across four GPUs, assigning one field per device and pe
 The adopted strategy of distributing different fields across multiple GPUs naturally extends to coarse-grained formulations based on complex amplitudes of the principal Fourier modes  [@salvalaglio2022coarse]. These models are well-suited to pseudo-spectral methods and typically require the simultaneous evolution of tens of coupled complex-valued fields, a setting for which we expect the present parallelization strategy to be particularly effective.
 
 
+\section*{Implementation Snippet}
+
+\begin{lstlisting}[caption={Single FFT on Multiple GPUs}, label={lst:matlab1}]
+%%initialize and decompose into slabs
+% psi ...initial density field
+% psiF...Fourier transformed initial density field
+% lap ...discretized laplacian
+% lin ...discretized linear operator (epsilon+L^2)nabla^2
+
+spmd %parallel GPU session (G GPUs), on each GPU perform
+    for  n=1:n_timeSteps %time iteration
+        %%forward fftn
+        psi = fft2(psi.^3); %fft2 along first two dimensions
+        for i=1:G %P2P communication 
+            psi_chunk = psi(localStart:localStart,:,:); %decompose each slab in a set of local chunks
+            psi_chunk= spmdCat(psi_chunk,3,i); %stack the chunks together (along third dimension)
+        end
+        psi = psi_chunk;
+        psi = fft(psi,[],3);  %fft along third dimension
+        
+        %%semi-implicit time step update
+        psiF = (psiF+dt*lap.*psi)./(1-dt*lin); 
+
+        %%backward ifftn
+        psi = psiF;
+        psi  = ifft(psi,[],3); %ifft along third dimension
+        for i=1:G %P2P communication  
+            psi_chunk = psi(:,:,localStart:localStart);%decompose each slab in a set of local chunks
+            psi_chunk= spmdCat(psi_chunk,1,i); %stack the chunks together (along first dimension)
+        end
+        psi = psi_chunk;
+        psi  = ifft2(psi); %ifft2 along first two dimensions
+    end
+end
+
+%% stack solution 
+psi = cat(3, gather(psi{:}));
+\end{lstlisting}
+
+
+\begin{lstlisting}[caption={Multiple GPU usage for Multiphysics PFC}, label={lst:matlab2}]
+%%initialize on GPU1
+% psi ...initial density field
+% psiF...Fourier transformed initial density field
+% v1  ...initial velocity field (first component)
+% v2  ...initial velocity field (secod component)
+% v3  ...initial velocity field (third component)
+% lin ...discretized linear operator (epsilon+L^2)nabla^2
+% k   ...discretized Fourier vector (first dimension)
+% l   ...discretized Fourier vector (second dimension)
+% m   ...discretized Fourier vector (third dimension)
+
+%%initialize on GPU2...GPU4
+% lap ...discretized laplacian
+% k   ...discretized Fourier vector (first dimension)
+% op  ...discretized linear operator (epsilon+L^2)
+% cg  ... discretized convolution kernel
+% additionally initialize on GPU2
+% v1F ...Fourier transformed initial v1
+% additionally initialize on GPU3
+% v2F ...Fourier transformed initial v2
+% additionally initialize on GPU4
+% v3F ...Fourier transformed initial v3
+
+spmd %parallel GPU session (4 GPUs)
+    for  n=1:n_timeSteps %time iteration
+        if spmdIndex==1 %GPU1 holding psi
+            %%semi-implicit time step update of psi
+            psiF = (psiF+dt*(lap.*fftn(psi.^3)-fftn(v1.*ifftn(k.*psiF)+v2.*ifftn(l.*psiF)+v3IF.*ifftn(m.*psiF))))./(1-dt*lin);
+            psi = ifftn(psiF);
+            %%send psi to GPU2...GPU4
+            spmdSend(psi,[2:4],2); 
+            %%receive v components from GPU2...GPU4
+            v1 = spmdReceive(2,4);
+            v2 = spmdReceive(3,5);
+            v3 = spmdReceive(4,6);
+            
+        elseif spmdIndex==2 %GPU2 holding v1
+            %receive psi from GPU1
+            psi = spmdReceive(1,2);
+            %%fully-implicit time step update of v1
+            v1F = (v1F-dt/rho0 .*cg.*fftn(psi.*ifftn(k.*(fftn(psi.^3) + op.*fftn(psi)))))
+                ./(1-deltatEuler/rho0.*.GammaS.*lap));
+            v1 = ifftn(v1F);
+            %send v1 to GPU1
+            spmdSend(v1,1,4);
+            
+        elseif spmdIndex==3 %GPU3 holding v2
+            %receive psi from GPU1
+            psi = spmdReceive(1,2);
+            %%fully-implicit time step update of v2
+            v2F = (v2F-dt/rho0 .*cg.*fftn(psi.*ifftn(l.*(fftn(psi.^3) + op.*fftn(psi)))))
+                ./(1-deltatEuler/rho0.*.GammaS.*lap));
+            v2 = ifftn(v2F);
+            %send v2 to GPU1
+            spmdSend(v2,1,5);
+            
+        elseif spmdIndex==4 %GPU4 holding v3
+            %receive psi from GPU1
+            psi = spmdReceive(1,2);
+            %%fully-implicit time step update of v3
+            v3F = (v3F-dt/rho0 .*cg.*fftn(psi.*ifftn(m.*(fftn(psi.^3) + op.*fftn(psi)))))
+                ./(1-deltatEuler/rho0.*.GammaS.*lap));
+            v3 = ifftn(v3F);
+            %send v3 to GPU1
+            spmdSend(v3,1,6);
+        end    
+    end
+end
+\end{lstlisting}
 
 # State of the field                                                                                                                  
 
