@@ -68,12 +68,12 @@ with $\widehat{\mathcal{L}}_k$ a polynomial in $k$ as $\widehat{[\partial^{n}_x 
 
 # Single FFT on Multiple GPUs
 
-Distributed multi-GPU FFTs based on domain decomposition and inter-GPU communication are well established in high-performance computing; see, e.g.,  [@pekurovsky2012p3dFFT;ayala2020heFFTe;verma2023scalable;cuFFTmp]. These approaches enable scalable multi-dimensional FFTs on large GPU systems.
-In contrast, FFT-based pseudo-spectral solvers for the PFC equation have so far been limited to single-GPU implementations  [@hallberg2025pypfc] or CPU-based parallelization  [@pinomaa2024openpfc;skogvoll2024comfit]. To our knowledge, a dedicated multi-GPU FFT implementation tailored to large-scale three-dimensional PFC simulations has not been reported. Furthermore, a general multi-GPU FFT implementation is not yet available in MATLAB, independent of any specific application such as PFC simulations.
+Distributed multi-GPU FFTs based on domain decomposition and inter-GPU communication are well established in high-performance computing; see, e.g.,  [@pekurovsky2012p3dFFT;@ayala2020heFFTe;@verma2023scalable;@cuFFTmp]. These approaches enable scalable multi-dimensional FFTs on large GPU systems.
+In contrast, FFT-based pseudo-spectral solvers for the PFC equation have so far been limited to single-GPU implementations  [@hallberg2025pypfc] or CPU-based parallelization  [@pinomaa2024openpfc;@skogvoll2024comfit]. To our knowledge, a dedicated multi-GPU FFT implementation tailored to large-scale three-dimensional PFC simulations has not been reported. Furthermore, a general multi-GPU FFT implementation is not yet available in MATLAB, independent of any specific application such as PFC simulations.
 
-Following the strategy of  [@pekurovsky2012p3dFFT;ayala2020heFFTe], we decompose a three-dimensional FFT of size $N_x \times N_y \times N_z$ across $G$ GPUs by slab decomposition along the $z$-direction, cf. Fig. \ref{fig:multiGPU}(a). Each GPU first performs local two-dimensional FFTs, then performs peer-to-peer (P2P) communication to redistribute the data, and finally performs a final one-dimensional FFT along the remaining dimension. After completion, each GPU holds a portion of the transformed Fourier-space array.
+Following the strategy of  [@pekurovsky2012p3dFFT;@ayala2020heFFTe], we decompose a three-dimensional FFT of size $N_x \times N_y \times N_z$ across $G$ GPUs by slab decomposition along the $z$-direction, cf. Fig. \ref{fig:multiGPU}(a). Each GPU first performs local two-dimensional FFTs, then performs peer-to-peer (P2P) communication to redistribute the data, and finally performs a final one-dimensional FFT along the remaining dimension. After completion, each GPU holds a portion of the transformed Fourier-space array.
 
-We apply this strategy to the PFC equation, which describes the evolution of a periodic density field $\psi\equiv \psi(\mathbf{x},t)$  [@Elder2002;Elder2004]. The model builds on a free-energy functional, which, for example, can be expressed for face-centered cubic (FCC) crystal symmetry as
+We apply this strategy to the PFC equation, which describes the evolution of a periodic density field $\psi\equiv \psi(\mathbf{x},t)$  [@Elder2002;@Elder2004]. The model builds on a free-energy functional, which, for example, can be expressed for face-centered cubic (FCC) crystal symmetry as
 \begin{equation}
 \label{eq:SHenergy}
 F[\psi]
@@ -96,7 +96,7 @@ We benchmark the multi-GPU solver for problem sizes ranging from $750^3$ to $140
 Figure \ref{fig:multiGPU_examples}(a) illustrates dendritic solidification within the PFC framework, presented here as a representative two-dimensional benchmark example.
 
 \section*{Multiple GPU usage for Multiphysics PFC}
-The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (v_1(\mathbf{x},t),v_2(\mathbf{x},t),v_3(\mathbf{x},t))$:
+The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;@qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (v_1(\mathbf{x},t),v_2(\mathbf{x},t),v_3(\mathbf{x},t))$:
 \begin{equation}
 \label{eq:hpfc}
 \begin{aligned}
