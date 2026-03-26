@@ -37,6 +37,12 @@ The first strategy distributes a single high-dimensional FFT across multiple GPU
 
 In the following, phase-field crystal (PFC) models [@Elder2002;@Elder2004;@Emmerich2012] serve as a representative application that underscores the need for such multi-GPU capabilities. PFC models resolve crystalline order at atomic length scales while evolving on large (diffusive) time scales, enabling the simulation of elasticity, defects, grain boundaries, and microstructure evolution within a unified mesoscale framework. Capturing these phenomena typically requires relatively large periodic domains but fine spatial resolution, leading to substantial memory demands and limiting the reachable size of single-GPU execution. This is even more relevant for multiphysics extensions that involve additional variables, such as coupled density/composition, velocity, and/or temperature fields (see, e.g., [@skogvoll2022hydrodynamic;@Punke_2022]).
 
+The pseudo-spectral Fourier method is a natural and widely adopted numerical approach for PFC and related models, as it allows for efficient and accurate evaluation of high-order spatial derivatives and convolution operators that arise in their governing equations (see, e.g., [@cheng2008numeric;@tegze2009advanced;@cheng2019energy;@Punke2023;@punke2025hybrid;@punke2026grain]). 
+However, its performance is dominated by repeated multidimensional FFTs, which are required at every time step due to the nonlinear nature of the PDEs governing PFC dynamics, and quickly become the computational bottleneck at large scales. Efficient multi-GPU FFT strategies are therefore essential to fully exploit the accuracy and scalability of pseudo-spectral solvers.
+
+As a representative use case, we thus exploit the developed strategies for multi-GPU execution in numerical simulations using a Fourier pseudo-spectral solver for the PFC model in two and three dimensions, where large spatial domains and coupled fields make single-GPU execution impractical. The algorithms are implemented in MATLAB, providing an accessible and extensible foundation for GPU-accelerated spectral simulations and introducing the first multi-GPU FFT implementation in MATLAB.
+
+
 
 # State of the field                                                                                                                  
 
