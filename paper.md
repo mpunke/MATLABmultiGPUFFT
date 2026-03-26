@@ -124,6 +124,7 @@ The adopted strategy of distributing different fields across multiple GPUs natur
 # Implementation Snippet
 
 ```matlab
+\label{lst:matlab1}
 %%initialize and decompose into slabs
 % psi ...initial density field
 % psiF...Fourier transformed initial density field
@@ -261,7 +262,7 @@ of this manuscript, or the preparation of supporting materials.
 
 # Availability
 \textbf{Repository:} \url{https://github.com/mpunke/MATLABmultiGPUFFT/} \\
-\textbf{License:} Creative Commons Attribution 4.0 International \\
+\textbf{License:} MIT License \\
 \textbf{Zenodo DOI:} \url{https://doi.org/10.5281/zenodo.18670913}
 
 
