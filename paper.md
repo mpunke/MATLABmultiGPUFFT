@@ -35,9 +35,9 @@ Large-scale simulations based on the pseudo-spectral Fourier method [@boyd2001ch
 
 The first strategy distributes a single high-dimensional FFT across multiple GPUs via domain decomposition and inter-GPU communication, enabling Fourier transforms for problem sizes that exceed the memory of individual GPUs. The second strategy computes multiple FFTs concurrently by assigning different physical fields to separate GPUs with synchronized communication.
 
-In the following, phase-field crystal (PFC) models [@Elder2002;@Elder2004;@Emmerich2012] serve as a representative application that underscores the need for such multi-GPU capabilities. PFC models resolve crystalline order at atomic length scales while evolving on large (diffusive) time scales, enabling the simulation of elasticity, defects, grain boundaries, and microstructure evolution within a unified mesoscale framework. Capturing these phenomena typically requires relatively large periodic domains but fine spatial resolution, leading to substantial memory demands and limiting the reachable size of single-GPU execution. This is even more relevant for multiphysics extensions that involve additional variables, such as coupled density/composition, velocity, and/or temperature fields (see, e.g., [@skogvoll2022hydrodynamic;@Punke_2022]).
+In the following, phase-field crystal (PFC) models [@Elder2002;@Elder2004;@Emmerich2012] serve as a representative application that underscores the need for such multi-GPU capabilities. PFC models resolve crystalline order at atomic length scales while evolving on large (diffusive) time scales, enabling the simulation of elasticity, defects, grain boundaries, and microstructure evolution within a unified mesoscale framework. Capturing these phenomena typically requires relatively large periodic domains but fine spatial resolution, leading to substantial memory demands and limiting the reachable size of single-GPU execution. This is even more relevant for multiphysics extensions that involve additional variables, such as coupled density/composition, velocity, and/or temperature fields, see, e.g., [@skogvoll2022hydrodynamic;@Punke_2022].
 
-The pseudo-spectral Fourier method is a natural and widely adopted numerical approach for PFC and related models, as it allows for efficient and accurate evaluation of high-order spatial derivatives and convolution operators that arise in their governing equations (see, e.g., [@cheng2008numeric;@tegze2009advanced;@cheng2019energy;@Punke2023;@punke2025hybrid;@punke2026grain]). 
+The pseudo-spectral Fourier method is a natural and widely adopted numerical approach for PFC and related models, as it allows for efficient and accurate evaluation of high-order spatial derivatives and convolution operators that arise in their governing equations, see, e.g., [@cheng2008numeric;@tegze2009advanced;@cheng2019energy;@Punke2023;@punke2025hybrid;@punke2026grain]. 
 However, its performance is dominated by repeated multidimensional FFTs, which are required at every time step due to the nonlinear nature of the PDEs governing PFC dynamics, and quickly become the computational bottleneck at large scales. Efficient multi-GPU FFT strategies are therefore essential to fully exploit the accuracy and scalability of pseudo-spectral solvers.
 
 As a representative use case, we thus exploit the developed strategies for multi-GPU execution in numerical simulations using a Fourier pseudo-spectral solver for the PFC model in two and three dimensions, where large spatial domains and coupled fields make single-GPU execution impractical. The algorithms are implemented in MATLAB, providing an accessible and extensible foundation for GPU-accelerated spectral simulations and introducing the first multi-GPU FFT implementation in MATLAB.
@@ -58,11 +58,11 @@ with $N = 2K+1$ modes  $\widehat{u}_k\equiv \widehat{u}(k,t)$ and equispaced col
 \begin{equation}
 x_j = \frac{2\pi j}{N}, \quad j = 0,\dots,N-1.
 \end{equation}
-In the Fourier pseudo-spectral method, a time-dependent ordinary differential equation for $\widehat{u}_k$ is obtained by applying the Fourier transform to the left and right-hand side of Eq.~\eqref{eq:realdyn}, reading
+In the Fourier pseudo-spectral method, a time-dependent ordinary differential equation for $\widehat{u}_k$ is obtained by applying the Fourier transform to the left and right-hand side of Eq. \eqref{eq:realdyn}, reading
 \begin{equation}\label{eq:fdyn}
 \partial_t \widehat{u}_k = \widehat{\mathcal{L}}_k \widehat u_k + \widehat{[\mathcal{N}(u)]}_k \qquad \forall k=-K, \dots, K
 \end{equation}
-with $\widehat{\mathcal{L}}_k$ a polynomial in $k$ as $\widehat{[\partial^{n}_x u]}_k = (ik)^n \widehat{u}_k$, $\forall n\in \mathbb{N}$ while the nonlinear polynomial term is evaluated point-wise in physical space at every time iteration and then transformed to Fourier space. For a given $u(x,t)$ and time step $\Delta t$,  $u(x,t+\Delta t)$ is computed by first determining $\widehat{u}_k(t)$ and $\widehat{[\mathcal{N}(u)]}_k(t)$ via FFTs, solving the system of ODEs~\eqref{eq:fdyn} using a suitable time-integration scheme, and then computing the inverse FFT from the resulting $\widehat{u}_k(t+\Delta t)$. The concept can be readily extended to higher spatial dimensions. More details can be found in Ref.~[@boyd2001chebyshev].
+with $\widehat{\mathcal{L}}_k$ a polynomial in $k$ as $\widehat{[\partial^{n}_x u]}_k = (ik)^n \widehat{u}_k$, $\forall n\in \mathbb{N}$ while the nonlinear polynomial term is evaluated point-wise in physical space at every time iteration and then transformed to Fourier space. For a given $u(x,t)$ and time step $\Delta t$,  $u(x,t+\Delta t)$ is computed by first determining $\widehat{u}_k(t)$ and $\widehat{[\mathcal{N}(u)]}_k(t)$ via FFTs, solving the system of ODEs \eqref{eq:fdyn} using a suitable time-integration scheme, and then computing the inverse FFT from the resulting $\widehat{u}_k(t+\Delta t)$. The concept can be readily extended to higher spatial dimensions. More details can be found in Ref. [@boyd2001chebyshev].
 
 
 
@@ -136,7 +136,7 @@ interface design, `Gala` has also been incorporated into graduate-level galactic
 dynamics curricula at multiple institutions.
 
 `Gala` has been downloaded over 100,000 times from PyPI and conda-forge yearly
-(or ~2,000 downloads per week) over the past few years, demonstrating a broad
+(or  2,000 downloads per week) over the past few years, demonstrating a broad
 and active user community. Users span career stages from graduate students to
 faculty and other established researchers and represent institutions around the
 world. This broad adoption and active participation validate `Gala`'s role as
