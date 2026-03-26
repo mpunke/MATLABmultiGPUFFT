@@ -95,7 +95,7 @@ We benchmark the multi-GPU solver for problem sizes ranging from $750^3$ to $140
 
 Figure \ref{fig:multiGPU_examples}(a) illustrates dendritic solidification within the PFC framework, presented here as a representative two-dimensional benchmark example.
 
-\section*{Multiple GPU usage for Multiphysics PFC}
+# Multiple GPU usage for Multiphysics PFC
 The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;@qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (v_1(\mathbf{x},t),v_2(\mathbf{x},t),v_3(\mathbf{x},t))$:
 \begin{equation}
 \label{eq:hpfc}
