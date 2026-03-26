@@ -231,6 +231,29 @@ spmd %parallel GPU session (4 GPUs)
     end
 end
 ```
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{Multi_GPU_FFT.pdf}
+\caption{
+(a) Schematic of the multi-GPU FFT algorithm based on slab decomposition for a three-dimensional array. The data are decomposed along the $z$-direction, followed by local two-dimensional FFTs, peer-to-peer communication, and a final one-dimensional FFT (upper panel). Relative runtimes for $1000$ time steps are shown, normalized by CPU execution time. Speedups of up to a factor of six are observed, with optimal performance on a single GPU for $750^3$ and multi-GPU execution required for larger domains due to memory constraints. An array of size $1400^3$ fits only on four H100 GPUs and reaches approximately 17 \% of the CPU runtime (lower panel).
+(b) Decomposition of a pseudo-spectral multiphysics PFC solver (e.g., hydrodynamic PFC) across four GPUs (upper panel). Relative runtimes of the hydrodynamic PFC solver are shown as a function of problem size, demonstrating that multi-GPU execution enables simulations up to a problem size of $900^3$, which is infeasible on a single GPU. Compared to a CPU implementation, speedups of up to 60$\times$ are achieved (lower panel).
+}
+	\label{fig:multiGPU}
+\end{figure*} 
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{multiphysics.pdf}
+\caption{
+Representative large-scale PFC benchmark problems for multi-GPU FFT algorithms:
+(a) Dendritic solidification (underlying triangular crystal symmetry) using the multi-GPU single-FFT implementation (2D example; computational domain of size $5\cdot 10^4\times 5\cdot 10^4$, corresponding to $2.5 \,\mu\mathrm{m}\times 2.5 \,\,\mu\mathrm{m}$ when assuming a lattice constant of $4\AA$ for aluminum). The density field $\psi$ along with a close-up is shown. White lines delineate patches, as the array exceeds single-plot size limits.
+(b) Polycrystalline coarsening of an FCC crystal structure using the multi-GPU hydrodynamic PFC solver. Visualized are the density field $\psi$ (including a magnified view) and the velocity components $v_1$, $v_2$, $v_3$. A grid of $1400\times 1400\times 1400$ is used which corresponds to a box size of $40\,\mathrm{nm}\times 40\,\mathrm{nm}\times 40\,\mathrm{nm}$. The material and model parameters are documented in the repository accompanying this work.
+}
+	\label{fig:multiGPU_examples}
+\end{figure*} 
+
 # State of the field                                                                                                                  
 
 Several tools exist for galactic dynamics computations:                                                     
