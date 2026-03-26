@@ -11,19 +11,16 @@ authors:
     orcid: 0000-0002-3564-7942
     equal-contrib: true
     affiliation: "1" # (Multiple affiliations must be quoted)
-  - given-names: Ludwig
-    dropping-particle: van
-    surname: Beethoven
-    affiliation: 3
+  - name: Marco Salvalaglio
+    orcid: 0000-0002-4217-0951
+    equal-contrib: true
+    affiliation: "1, 2" # (Multiple affiliations must be quoted)
 affiliations:
- - name: Lyman Spitzer, Jr. Fellow, Princeton University, United States
+ - name: Institute of Scientific Computing, TU Dresden, 01062 Dresden, Germany
    index: 1
-   ror: 00hx57361
- - name: Institution Name, Country
+ - name: Dresden Center for Computational Materials Science, TU Dresden, 01062 Dresden, Germany
    index: 2
- - name: Independent Researcher, Country
-   index: 3
-date: 13 August 2017
+date: 26 March 2026
 bibliography: paper.bib
 
 # Optional fields if submitting to a AAS journal too, see this blog post:
