@@ -140,7 +140,7 @@ Figure \ref{fig:multiGPU_examples}(a) illustrates dendritic solidification withi
 
 # Multiple GPU usage for Multiphysics PFC
 
-The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;@qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (v_1(\mathbf{x},t),v_2(\mathbf{x},t),v_3(\mathbf{x},t))$:
+The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;@qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (\mathbf{v}_1(\mathbf{x},t),\mathbf{v}_2(\mathbf{x},t),\mathbf{v}_3(\mathbf{x},t))$:
 \begin{equation}
 \label{eq:hpfc}
 \begin{aligned}
@@ -259,7 +259,7 @@ The adopted strategy of distributing different fields across multiple GPUs natur
 \caption{
 Representative large-scale PFC benchmark problems for multi-GPU FFT algorithms:
 (a) Dendritic solidification (underlying triangular crystal symmetry) using the multi-GPU single-FFT implementation (2D example; computational domain of size $5\cdot 10^4\times 5\cdot 10^4$, corresponding to $2.5 \,\mu\mathrm{m}\times 2.5 \,\,\mu\mathrm{m}$ when assuming a lattice constant of $4\AA$ for aluminum). The density field $\psi$ along with a close-up is shown. White lines delineate patches, as the array exceeds single-plot size limits.
-(b) Polycrystalline coarsening of an FCC crystal structure using the multi-GPU hydrodynamic PFC solver. Visualized are the density field $\psi$ (including a magnified view) and the velocity components $v_1$, $v_2$, $v_3$. A grid of $1400\times 1400\times 1400$ is used which corresponds to a box size of $40\,\mathrm{nm}\times 40\,\mathrm{nm}\times 40\,\mathrm{nm}$. The material and model parameters are documented in the repository accompanying this work.
+(b) Polycrystalline coarsening of an FCC crystal structure using the multi-GPU hydrodynamic PFC solver. Visualized are the density field $\psi$ (including a magnified view) and the velocity components $\mathbf{v}_1$, $\mathbf{v}_2$, $\mathbf{v}_3$. A grid of $1400\times 1400\times 1400$ is used which corresponds to a box size of $40\,\mathrm{nm}\times 40\,\mathrm{nm}\times 40\,\mathrm{nm}$. The material and model parameters are documented in the repository accompanying this work.
 }
 	\label{fig:multiGPU_examples}
 \end{figure*} 
