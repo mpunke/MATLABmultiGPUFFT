@@ -37,14 +37,6 @@ The first strategy distributes a single high-dimensional FFT across multiple GPU
 
 In the following, phase-field crystal (PFC) models [@Elder2002;@Elder2004;@Emmerich2012] serve as a representative application that underscores the need for such multi-GPU capabilities. PFC models resolve crystalline order at atomic length scales while evolving on large (diffusive) time scales, enabling the simulation of elasticity, defects, grain boundaries, and microstructure evolution within a unified mesoscale framework. Capturing these phenomena typically requires relatively large periodic domains but fine spatial resolution, leading to substantial memory demands and limiting the reachable size of single-GPU execution. This is even more relevant for multiphysics extensions that involve additional variables, such as coupled density/composition, velocity, and/or temperature fields (see, e.g., [@skogvoll2022hydrodynamic;@Punke_2022]).
 
-`Gala` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.
 
 # State of the field                                                                                                                  
 
