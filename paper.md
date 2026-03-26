@@ -69,7 +69,7 @@ with $\widehat{\mathcal{L}}_k$ a polynomial in $k$ as $\widehat{[\partial^{n}_x 
 
 # Single FFT on Multiple GPUs
 
-Distributed multi-GPU FFTs based on domain decomposition and inter-GPU communication are well established in high-performance computing; see, e.g.,  [@pekurovsky2012p3dfft;@ayala2020heffte;@verma2023scalable;@cuFFTmp]. These approaches enable scalable multi-dimensional FFTs on large GPU systems.
+Distributed multi-GPU FFTs based on domain decomposition and inter-GPU communication are well established in high-performance computing; see, e.g.,  [@pekurovsky2012p3dfft;@ayala2020heffte;@verma2023scalable;@cufftmp]. These approaches enable scalable multi-dimensional FFTs on large GPU systems.
 In contrast, FFT-based pseudo-spectral solvers for the PFC equation have so far been limited to single-GPU implementations  [@hallberg2025pypfc] or CPU-based parallelization  [@pinomaa2024openpfc;@skogvoll2024comfit]. To our knowledge, a dedicated multi-GPU FFT implementation tailored to large-scale three-dimensional PFC simulations has not been reported. Furthermore, a general multi-GPU FFT implementation is not yet available in MATLAB, independent of any specific application such as PFC simulations.
 
 Following the strategy of  [@pekurovsky2012p3dfft;@ayala2020heffte], we decompose a three-dimensional FFT of size $N_x \times N_y \times N_z$ across $G$ GPUs by slab decomposition along the $z$-direction, cf. Fig. \ref{fig:multiGPU}(a). Each GPU first performs local two-dimensional FFTs, then performs peer-to-peer (P2P) communication to redistribute the data, and finally performs a final one-dimensional FFT along the remaining dimension. After completion, each GPU holds a portion of the transformed Fourier-space array.
