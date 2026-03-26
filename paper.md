@@ -33,6 +33,10 @@ We present a MATLAB-based framework for two- and three-dimensional fast Fourier 
 
 Large-scale simulations based on the pseudo-spectral Fourier method [@boyd2001chebyshev] are often limited by the memory capacity and performance of single GPUs due to their reliance on repeated multidimensional fast Fourier transforms (FFTs). To address this bottleneck, we present two complementary multi-GPU FFT strategies in two and three dimensions.
 
+The first strategy distributes a single high-dimensional FFT across multiple GPUs via domain decomposition and inter-GPU communication, enabling Fourier transforms for problem sizes that exceed the memory of individual GPUs. The second strategy computes multiple FFTs concurrently by assigning different physical fields to separate GPUs with synchronized communication.
+
+In the following, phase-field crystal (PFC) models [@Elder2002,@Elder2004,@Emmerich2012] serve as a representative application that underscores the need for such multi-GPU capabilities. PFC models resolve crystalline order at atomic length scales while evolving on large (diffusive) time scales, enabling the simulation of elasticity, defects, grain boundaries, and microstructure evolution within a unified mesoscale framework. Capturing these phenomena typically requires relatively large periodic domains but fine spatial resolution, leading to substantial memory demands and limiting the reachable size of single-GPU execution. This is even more relevant for multiphysics extensions that involve additional variables, such as coupled density/composition, velocity, and/or temperature fields (see, e.g., [@skogvoll2022hydrodynamic,@Punke_2022]).
+
 `Gala` was designed to be used by both astronomical researchers and by
 students in courses on gravitational dynamics or astronomy. It has already been
 used in a number of scientific publications [@Pearson:2017] and has also been
