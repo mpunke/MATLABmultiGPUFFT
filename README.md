@@ -54,5 +54,3 @@ Related projects
 
 - 3ms gitlab repository 
 https://gitlab.com/3ms-group/
-
-![Paper Status](https://github.com/mpunke/MATLABmultiGPUFFT/actions/workflows/paper/badge.svg)
