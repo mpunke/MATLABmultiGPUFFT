@@ -88,7 +88,7 @@ with undercooling parameter $\varepsilon$ and  $\mathcal{L} = (1+\nabla^2)^2(4/3
 \label{eq:evolution}
 \partial_t \psi
 =\nabla^2 \dfrac{\delta F[\psi]}{\delta \psi}=(\varepsilon + \mathcal{L}) \nabla^2 \psi
-+ \nabla^2 \psi^3.
++ \nabla^2 \psi^3
 \end{equation}
 which retains the form of Eq. \eqref{eq:realdyn}. The equation is solved using a Fourier pseudo-spectral method with semi-implicit time integration  [@tegze2009advanced]. We note that alternative time-integration approaches can be considered  [@Punke2023].
 
@@ -105,8 +105,11 @@ spmd %parallel GPU session (G GPUs), on each GPU perform
         %%forward fftn
         psi = fft2(psi.^3); %fft2 along first two dimensions
         for i=1:G %P2P communication 
-            psi_chunk = psi(localStart:localStart,:,:); %decompose each slab in a set of local chunks
-            psi_chunk= spmdCat(psi_chunk,3,i); %stack the chunks together (along third dimension)
+            psi_chunk = psi(localStart:localStart,:,:); %decompose each slab
+														%in a set of local
+														%chunks
+            psi_chunk= spmdCat(psi_chunk,3,i); %stack the chunks together
+											   %(along third dimension)
         end
         psi = psi_chunk;
         psi = fft(psi,[],3);  %fft along third dimension
@@ -118,8 +121,10 @@ spmd %parallel GPU session (G GPUs), on each GPU perform
         psi = psiF;
         psi  = ifft(psi,[],3); %ifft along third dimension
         for i=1:G %P2P communication  
-            psi_chunk = psi(:,:,localStart:localStart);%decompose each slab in a set of local chunks
-            psi_chunk= spmdCat(psi_chunk,1,i); %stack the chunks together (along first dimension)
+            psi_chunk = psi(:,:,localStart:localStart);%decompose each slab
+													   %in a set of local chunks
+            psi_chunk= spmdCat(psi_chunk,1,i); %stack the chunks together
+                                               %(along first dimension)
         end
         psi = psi_chunk;
         psi  = ifft2(psi); %ifft2 along first two dimensions
@@ -146,7 +151,7 @@ The PFC framework readily supports multiphysics extensions. As an example, we co
 \end{equation}
 with $\langle\ \cdot \ \rangle$ a local averaging obtained through a convolution with a Gaussian kernel 
 \begin{equation}\label{eq:coarsegraining}
-\langle \ \cdot\ \rangle(\mathbf{r})=\int_\Omega  \frac{ (\ \cdot\ )\left(\mathbf{r}^{\prime}\right)}{\left(2 \pi a_0^2\right)^{3 / 2}} \exp \left(-\frac{\left(\mathbf{r}-\mathbf{r}^{\prime}\right)^2}{2 a_0^2}\right) d \mathbf{r}^{\prime}.
+\langle \ \cdot\ \rangle(\mathbf{r})=\int_\Omega  \frac{ (\ \cdot\ )\left(\mathbf{r}^{\prime}\right)}{\left(2 \pi a_0^2\right)^{3 / 2}} \exp \left(-\frac{\left(\mathbf{r}-\mathbf{r}^{\prime}\right)^2}{2 a_0^2}\right) d \mathbf{r}^{\prime}
 \end{equation}
 and $a_0$ the lattice spacing. Note that this operation just translates to a multiplication in the Fourier spectral method owing to the properties of the Fourier transform.
 
@@ -261,8 +266,8 @@ No generative AI tools were used in the development of this software, the writin
 of this manuscript, or the preparation of supporting materials.
 
 # Availability
-\textbf{Repository:} \url{https://github.com/mpunke/MATLABmultiGPUFFT/} \\
-\textbf{License:} MIT License \\
+\textbf{Repository:} \url{https://github.com/mpunke/MATLABmultiGPUFFT/} 
+\textbf{License:} MIT License 
 \textbf{Zenodo DOI:} \url{https://doi.org/10.5281/zenodo.18670913}
 
 
