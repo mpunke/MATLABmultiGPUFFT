@@ -43,6 +43,30 @@ However, its performance is dominated by repeated multidimensional FFTs, which a
 As a representative use case, we thus exploit the developed strategies for multi-GPU execution in numerical simulations using a Fourier pseudo-spectral solver for the PFC model in two and three dimensions, where large spatial domains and coupled fields make single-GPU execution impractical. The algorithms are implemented in MATLAB, providing an accessible and extensible foundation for GPU-accelerated spectral simulations and introducing the first multi-GPU FFT implementation in MATLAB.
 
 
+# Fourier pseudo-spectral method
+We briefly review the basics of the Fourier pseudo-spectral method. Although the actual implementation is carried out in two and three dimensions, we restrict the following discussion to a one-dimensional setting for the sake of simplicity. We consider a generic evolution equation for a scalar field $u\equiv u(x,t)$ of the form
+\begin{equation}\label{eq:realdyn}
+\partial_t u = \mathcal{L}u + \mathcal{N}(u), \quad x \in [0,2\pi), \ t \ge 0,
+\end{equation}
+where $\mathcal{L}$ is a linear differential operator, and $\mathcal{N}(u)$ is a nonlinear term given by a polynomial in $u$.
+
+On the periodic domain $[0,2\pi)$, we approximate $u(x,t)$ by a truncated Fourier series
+\begin{equation}
+u(x,t) \approx u_N(x,t) = \sum_{k=-K}^{K} \widehat{u}_k  e^{ikx},
+\end{equation}
+with $N = 2K+1$ modes  $\widehat{u}_k\equiv \widehat{u}(k,t)$ and equispaced collocation points
+\begin{equation}
+x_j = \frac{2\pi j}{N}, \quad j = 0,\dots,N-1.
+\end{equation}
+In the Fourier pseudo-spectral method, a time-dependent ordinary differential equation for $\widehat{u}_k$ is obtained by applying the Fourier transform to the left and right-hand side of Eq.~\eqref{eq:realdyn}, reading
+\begin{equation}\label{eq:fdyn}
+\partial_t \widehat{u}_k = \widehat{\mathcal{L}}_k \widehat u_k + \widehat{[\mathcal{N}(u)]}_k \qquad \forall k=-K, \dots, K
+\end{equation}
+with $\widehat{\mathcal{L}}_k$ a polynomial in $k$ as $\widehat{[\partial^{n}_x u]}_k = (ik)^n \widehat{u}_k$, $\forall n\in \mathbb{N}$ while the nonlinear polynomial term is evaluated point-wise in physical space at every time iteration and then transformed to Fourier space. For a given $u(x,t)$ and time step $\Delta t$,  $u(x,t+\Delta t)$ is computed by first determining $\widehat{u}_k(t)$ and $\widehat{[\mathcal{N}(u)]}_k(t)$ via FFTs, solving the system of ODEs~\eqref{eq:fdyn} using a suitable time-integration scheme, and then computing the inverse FFT from the resulting $\widehat{u}_k(t+\Delta t)$. The concept can be readily extended to higher spatial dimensions. More details can be found in Ref.~[@boyd2001chebyshev].
+
+
+
+
 
 # State of the field                                                                                                                  
 
