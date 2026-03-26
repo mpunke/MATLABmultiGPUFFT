@@ -117,9 +117,9 @@ We distribute the fields across four GPUs, assigning one field per device and pe
 The adopted strategy of distributing different fields across multiple GPUs naturally extends to coarse-grained formulations based on complex amplitudes of the principal Fourier modes  [@salvalaglio2022coarse]. These models are well-suited to pseudo-spectral methods and typically require the simultaneous evolution of tens of coupled complex-valued fields, a setting for which we expect the present parallelization strategy to be particularly effective.
 
 
-\section*{Implementation Snippet}
+# Implementation Snippet
 
-\begin{lstlisting}[caption={Single FFT on Multiple GPUs}, label={lst:matlab1}]
+```python
 %%initialize and decompose into slabs
 % psi ...initial density field
 % psiF...Fourier transformed initial density field
@@ -154,10 +154,10 @@ end
 
 %% stack solution 
 psi = cat(3, gather(psi{:}));
-\end{lstlisting}
+```
 
 
-\begin{lstlisting}[caption={Multiple GPU usage for Multiphysics PFC}, label={lst:matlab2}]
+```python
 %%initialize on GPU1
 % psi ...initial density field
 % psiF...Fourier transformed initial density field
@@ -226,7 +226,7 @@ spmd %parallel GPU session (4 GPUs)
         end    
     end
 end
-\end{lstlisting}
+```
 
 # State of the field                                                                                                                  
 
