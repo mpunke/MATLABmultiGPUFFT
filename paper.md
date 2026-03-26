@@ -16,7 +16,7 @@ affiliations:
   - name: Institute of Scientific Computing, TU Dresden, Dresden, Germany
     index: 1
 date: 2026
-bibliography:
+bibliography: paper.bib
 ---
 
 # Summary
