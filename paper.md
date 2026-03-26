@@ -96,6 +96,7 @@ We benchmark the multi-GPU solver for problem sizes ranging from $750^3$ to $140
 Figure \ref{fig:multiGPU_examples}(a) illustrates dendritic solidification within the PFC framework, presented here as a representative two-dimensional benchmark example.
 
 # Multiple GPU usage for Multiphysics PFC
+
 The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;@qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (v_1(\mathbf{x},t),v_2(\mathbf{x},t),v_3(\mathbf{x},t))$:
 \begin{equation}
 \label{eq:hpfc}
@@ -119,7 +120,7 @@ The adopted strategy of distributing different fields across multiple GPUs natur
 
 # Implementation Snippet
 
-```python
+```matlab
 %%initialize and decompose into slabs
 % psi ...initial density field
 % psiF...Fourier transformed initial density field
@@ -157,7 +158,7 @@ psi = cat(3, gather(psi{:}));
 ```
 
 
-```python
+```matlab
 %%initialize on GPU1
 % psi ...initial density field
 % psiF...Fourier transformed initial density field
@@ -231,11 +232,11 @@ end
 # State of the field                                                                                                                  
 
 Several tools exist for galactic dynamics computations:                                                     
-`galpy` [@Bovy:2015] is a Python package with similar goals,
+`galpy` [@Bovy:2015] is a matlab package with similar goals,
 providing orbit integration and potential classes for galactic dynamics.                                                              
 `NEMO` [@Teuben:1995] is a well-established, comprehensive stellar dynamics                                                           
 toolbox written primarily in C, offering extensive functionality but with a                                                           
-steeper learning curve and less integration with modern Python workflows.                                                             
+steeper learning curve and less integration with modern matlab workflows.                                                             
 Other tools like `GalPot` provide specific Milky Way potential models but lack                                                        
 the broader dynamical analysis capabilities.                                                                                          
                                                                                                                                         
@@ -251,7 +252,7 @@ niche between simple demonstration codes and full N-body simulation packages
 like `Gadget` [@Springel:2005] – it focuses on the common tasks in galactic                                                             
 dynamics research (orbit integration, potential evaluation, coordinate                                                                
 transformations) while maintaining both performance through C implementations                                                         
-and usability through its Python interface.  
+and usability through its matlab interface.  
 
 # Software design
 
@@ -259,7 +260,7 @@ and usability through its Python interface.
 user-friendly, modular, object-oriented API, (2) to use community tools and
 standards (e.g., Astropy for coordinates and units handling), and (3) to use
 low-level code (C/C++/Cython) for performance while keeping the user interface
-in Python. Within each of the main subpackages in `gala` (`gala.potential`,
+in matlab. Within each of the main subpackages in `gala` (`gala.potential`,
 `gala.dynamics`, `gala.integrate`, etc.), we try to maintain a consistent API
 for classes and functions. For example, all potential classes share a common
 base class and implement methods for computing the potential, forces, density,
@@ -269,7 +270,7 @@ share the potential base class but also act as a dictionary-like container for
 different potential components. As another example, all integrators implement a
 common interface for numerically integrating orbits. The integrators and core
 potential functions are all implemented in C without support for units, but the
-Python layer handles unit conversions and prepares data to dispatch to the C
+matlab layer handles unit conversions and prepares data to dispatch to the C
 layer appropriately.Within the coordinates subpackage, we extend Astropy's
 coordinate classes to add more specialized coordinate frames and
 transformations that are relevant for Galactic dynamics and Milky Way research.
