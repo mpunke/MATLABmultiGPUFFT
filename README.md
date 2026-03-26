@@ -54,3 +54,5 @@ Related projects
 
 - 3ms gitlab repository 
 https://gitlab.com/3ms-group/
+
+![Paper Status](https://github.com/YOUR_REPO/actions/workflows/paper.yml/badge.svg)
