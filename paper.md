@@ -1,22 +1,16 @@
 ---
-title: 'Multi-GPU fast Fourier transforms in MATLAB \\ for large-scale phase-field crystal simulations'
+title: 'Multi-GPU fast Fourier transforms in MATLAB for large-scale phase-field crystal simulations'
 tags:
-  - Python
-  - astronomy
-  - dynamics
-  - galactic dynamics
-  - milky way
+  - MATLAB
+  - fft
+  - multi-gpu
+  - fft
+  - phase-field crystal
 authors:
-  - name: Adrian M. Price-Whelan
-    orcid: 0000-0000-0000-0000
+  - name: Maik Punke
+    orcid: 0000-0002-3564-7942
     equal-contrib: true
-    affiliation: "1, 2" # (Multiple affiliations must be quoted)
-  - name: Author Without ORCID
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
-    affiliation: 2
-  - name: Author with no affiliation
-    corresponding: true # (This is how to denote the corresponding author)
-    affiliation: 3
+    affiliation: "1" # (Multiple affiliations must be quoted)
   - given-names: Ludwig
     dropping-particle: van
     surname: Beethoven
