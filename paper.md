@@ -66,6 +66,56 @@ with $\widehat{\mathcal{L}}_k$ a polynomial in $k$ as $\widehat{[\partial^{n}_x 
 
 
 
+# Single FFT on Multiple GPUs
+
+Distributed multi-GPU FFTs based on domain decomposition and inter-GPU communication are well established in high-performance computing; see, e.g.,  [@pekurovsky2012p3dFFT;ayala2020heFFTe;verma2023scalable;cuFFTmp]. These approaches enable scalable multi-dimensional FFTs on large GPU systems.
+In contrast, FFT-based pseudo-spectral solvers for the PFC equation have so far been limited to single-GPU implementations  [@hallberg2025pypfc] or CPU-based parallelization  [@pinomaa2024openpfc;skogvoll2024comfit]. To our knowledge, a dedicated multi-GPU FFT implementation tailored to large-scale three-dimensional PFC simulations has not been reported. Furthermore, a general multi-GPU FFT implementation is not yet available in MATLAB, independent of any specific application such as PFC simulations.
+
+Following the strategy of  [@pekurovsky2012p3dFFT;ayala2020heFFTe], we decompose a three-dimensional FFT of size $N_x \times N_y \times N_z$ across $G$ GPUs by slab decomposition along the $z$-direction, cf. Fig. \ref{fig:multiGPU}(a). Each GPU first performs local two-dimensional FFTs, then performs peer-to-peer (P2P) communication to redistribute the data, and finally performs a final one-dimensional FFT along the remaining dimension. After completion, each GPU holds a portion of the transformed Fourier-space array.
+
+We apply this strategy to the PFC equation, which describes the evolution of a periodic density field $\psi\equiv \psi(\mathbf{x},t)$  [@Elder2002;Elder2004]. The model builds on a free-energy functional, which, for example, can be expressed for face-centered cubic (FCC) crystal symmetry as
+\begin{equation}
+\label{eq:SHenergy}
+F[\psi]
+= \int_\Omega \left[
+\frac{\psi}{2}\left(\varepsilon + \mathcal{L}\right)\psi
++ \frac{\psi^4}{4}
+\right]  \mathrm{d}\mathbf r,
+\end{equation}
+with undercooling parameter $\varepsilon$ and  $\mathcal{L} = (1+\nabla^2)^2(4/3+\nabla^2)^2$ an operator describing spatial correlations within the  domain $\Omega$. The classical evolution equation reads
+\begin{equation}
+\label{eq:evolution}
+\partial_t \psi
+=\nabla^2 \dfrac{\delta F[\psi]}{\delta \psi}=(\varepsilon + \mathcal{L}) \nabla^2 \psi
++ \nabla^2 \psi^3.
+\end{equation}
+which retains the form of Eq. \eqref{eq:realdyn}. The equation is solved using a Fourier pseudo-spectral method with semi-implicit time integration  [@tegze2009advanced]. We note that alternative time-integration approaches can be considered  [@Punke2023].
+
+We benchmark the multi-GPU solver for problem sizes ranging from $750^3$ to $1400^3$, achieving up to a sixfold speedup compared to a purely CPU-based implementation; see Fig. \ref{fig:multiGPU}(a). The benchmarks are performed on three systems from the HPC clusters provided by the NHR Center at TU Dresden. GPU computations are performed with four NVIDIA H100 SXM5 GPUs (94 GiB HBM2e each, HPC cluster Capella) and with eight NVIDIA A100 SXM4 GPUs (40 GiB HBM2 each, HPC cluster Alpha Centauri). CPU reference runs are performed on an Intel Xeon Platinum 8470 (100 cores, 2.00 GHz, HPC cluster Barnard). In Listing \ref{lst:matlab1}, the MATLAB implementation is illustrated.
+
+Figure \ref{fig:multiGPU_examples}(a) illustrates dendritic solidification within the PFC framework, presented here as a representative two-dimensional benchmark example.
+
+\section*{Multiple GPU usage for Multiphysics PFC}
+The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (v_1(\mathbf{x},t),v_2(\mathbf{x},t),v_3(\mathbf{x},t))$:
+\begin{equation}
+\label{eq:hpfc}
+\begin{aligned}
+\partial_t \psi &= \nabla^2\left(\frac{\delta F[\psi]}{\delta \psi}\right) -\mathbf{v}  \cdot \nabla \psi, \\
+\rho \partial_t \mathbf{v} &= \Gamma \nabla^2 \mathbf{v}
+- \Big\langle \psi \nabla\frac{\delta F[\psi]}{\delta \psi} \Big\rangle ,
+\end{aligned}
+\end{equation}
+with $\langle\ \cdot \ \rangle$ a local averaging obtained through a convolution with a Gaussian kernel 
+\begin{equation}\label{eq:coarsegraining}
+\langle \ \cdot\ \rangle(\mathbf{r})=\int_\Omega  \frac{ (\ \cdot\ )\left(\mathbf{r}^{\prime}\right)}{\left(2 \pi a_0^2\right)^{3 / 2}} \exp \left(-\frac{\left(\mathbf{r}-\mathbf{r}^{\prime}\right)^2}{2 a_0^2}\right) d \mathbf{r}^{\prime}.
+\end{equation}
+and $a_0$ the lattice spacing. Note that this operation just translates to a multiplication in the Fourier spectral method owing to the properties of the Fourier transform.
+
+We distribute the fields across four GPUs, assigning one field per device and performing synchronized inter-GPU communication after each time step. This strategy enables handling problems larger than single-GPU memory limits. Benchmark results using four NVIDIA H100 GPUs demonstrate substantial runtime reductions compared to CPU execution on the previously described HPC clusters Capella and Barnard. In particular, for large computational domains where single-GPU simulations become infeasible, significant performance gains are observed; see Fig. \ref{fig:multiGPU}(b). Listing \ref{lst:matlab2} illustrates the MATLAB implementation. Figure \ref{fig:multiGPU_examples}(b) depicts polycrystalline coarsening within the hydrodynamic PFC framework, presented here as a representative three-dimensional benchmark case.
+
+
+The adopted strategy of distributing different fields across multiple GPUs naturally extends to coarse-grained formulations based on complex amplitudes of the principal Fourier modes  [@salvalaglio2022coarse]. These models are well-suited to pseudo-spectral methods and typically require the simultaneous evolution of tens of coupled complex-valued fields, a setting for which we expect the present parallelization strategy to be particularly effective.
+
 
 
 # State of the field                                                                                                                  
