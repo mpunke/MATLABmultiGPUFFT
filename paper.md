@@ -122,7 +122,8 @@ spmd %parallel GPU session (G GPUs), on each GPU perform
         psi  = ifft(psi,[],3); %ifft along third dimension
         for i=1:G %P2P communication  
             psi_chunk = psi(:,:,localStart:localStart);%decompose each slab
-													   %in a set of local chunks
+													   %in a set of local
+													   %chunks
             psi_chunk= spmdCat(psi_chunk,1,i); %stack the chunks together
                                                %(along first dimension)
         end
@@ -277,6 +278,6 @@ of this manuscript, or the preparation of supporting materials.
 
 # Acknowledgements
 
-We acknowledge support from the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation), project numbers 447241406, 493401063. We also gratefully acknowledge the computing on the high-performance computer at the NHR Center of TU Dresden. This center is jointly supported by the Federal Ministry of Education and Research and the state governments participating in the NHR (\href{www.nhr-verein.de/unsere-partner}{www.nhr-verein.de/unsere-partner}).
+We acknowledge support from the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation), project numbers 447241406, 493401063. We also gratefully acknowledge the computing on the high-performance computer at the NHR Center of TU Dresden. This center is jointly supported by the Federal Ministry of Education and Research and the state governments participating in the NHR (\url{www.nhr-verein.de/unsere-partner}).
 
 # References
