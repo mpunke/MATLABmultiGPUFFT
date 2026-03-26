@@ -92,39 +92,8 @@ with undercooling parameter $\varepsilon$ and  $\mathcal{L} = (1+\nabla^2)^2(4/3
 \end{equation}
 which retains the form of Eq. \eqref{eq:realdyn}. The equation is solved using a Fourier pseudo-spectral method with semi-implicit time integration  [@tegze2009advanced]. We note that alternative time-integration approaches can be considered  [@Punke2023].
 
-We benchmark the multi-GPU solver for problem sizes ranging from $750^3$ to $1400^3$, achieving up to a sixfold speedup compared to a purely CPU-based implementation; see Fig. \ref{fig:multiGPU}(a). The benchmarks are performed on three systems from the HPC clusters provided by the NHR Center at TU Dresden. GPU computations are performed with four NVIDIA H100 SXM5 GPUs (94 GiB HBM2e each, HPC cluster Capella) and with eight NVIDIA A100 SXM4 GPUs (40 GiB HBM2 each, HPC cluster Alpha Centauri). CPU reference runs are performed on an Intel Xeon Platinum 8470 (100 cores, 2.00 GHz, HPC cluster Barnard). In Listing \ref{lst:matlab1}, the MATLAB implementation is illustrated.
-
-Figure \ref{fig:multiGPU_examples}(a) illustrates dendritic solidification within the PFC framework, presented here as a representative two-dimensional benchmark example.
-
-# Multiple GPU usage for Multiphysics PFC
-
-The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;@qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (v_1(\mathbf{x},t),v_2(\mathbf{x},t),v_3(\mathbf{x},t))$:
-\begin{equation}
-\label{eq:hpfc}
-\begin{aligned}
-\partial_t \psi &= \nabla^2\left(\frac{\delta F[\psi]}{\delta \psi}\right) -\mathbf{v}  \cdot \nabla \psi, \\
-\rho \partial_t \mathbf{v} &= \Gamma \nabla^2 \mathbf{v}
-- \Big\langle \psi \nabla\frac{\delta F[\psi]}{\delta \psi} \Big\rangle ,
-\end{aligned}
-\end{equation}
-with $\langle\ \cdot \ \rangle$ a local averaging obtained through a convolution with a Gaussian kernel 
-\begin{equation}\label{eq:coarsegraining}
-\langle \ \cdot\ \rangle(\mathbf{r})=\int_\Omega  \frac{ (\ \cdot\ )\left(\mathbf{r}^{\prime}\right)}{\left(2 \pi a_0^2\right)^{3 / 2}} \exp \left(-\frac{\left(\mathbf{r}-\mathbf{r}^{\prime}\right)^2}{2 a_0^2}\right) d \mathbf{r}^{\prime}.
-\end{equation}
-and $a_0$ the lattice spacing. Note that this operation just translates to a multiplication in the Fourier spectral method owing to the properties of the Fourier transform.
-
-We distribute the fields across four GPUs, assigning one field per device and performing synchronized inter-GPU communication after each time step. This strategy enables handling problems larger than single-GPU memory limits. Benchmark results using four NVIDIA H100 GPUs demonstrate substantial runtime reductions compared to CPU execution on the previously described HPC clusters Capella and Barnard. In particular, for large computational domains where single-GPU simulations become infeasible, significant performance gains are observed; see Fig. \ref{fig:multiGPU}(b). Listing \ref{lst:matlab2} illustrates the MATLAB implementation. Figure \ref{fig:multiGPU_examples}(b) depicts polycrystalline coarsening within the hydrodynamic PFC framework, presented here as a representative three-dimensional benchmark case.
-
-
-The adopted strategy of distributing different fields across multiple GPUs naturally extends to coarse-grained formulations based on complex amplitudes of the principal Fourier modes  [@salvalaglio2022coarse]. These models are well-suited to pseudo-spectral methods and typically require the simultaneous evolution of tens of coupled complex-valued fields, a setting for which we expect the present parallelization strategy to be particularly effective.
-
-
-
-
-# Implementation Snippet
-
+We benchmark the multi-GPU solver for problem sizes ranging from $750^3$ to $1400^3$, achieving up to a sixfold speedup compared to a purely CPU-based implementation; see Fig. \ref{fig:multiGPU}(a). The benchmarks are performed on three systems from the HPC clusters provided by the NHR Center at TU Dresden. GPU computations are performed with four NVIDIA H100 SXM5 GPUs (94 GiB HBM2e each, HPC cluster Capella) and with eight NVIDIA A100 SXM4 GPUs (40 GiB HBM2 each, HPC cluster Alpha Centauri). CPU reference runs are performed on an Intel Xeon Platinum 8470 (100 cores, 2.00 GHz, HPC cluster Barnard). Below, the MATLAB implementation is illustrated.
 ```matlab
-\label{lst:matlab1}
 %%initialize and decompose into slabs
 % psi ...initial density field
 % psiF...Fourier transformed initial density field
@@ -160,6 +129,29 @@ end
 %% stack solution 
 psi = cat(3, gather(psi{:}));
 ```
+
+
+Figure \ref{fig:multiGPU_examples}(a) illustrates dendritic solidification within the PFC framework, presented here as a representative two-dimensional benchmark example.
+
+# Multiple GPU usage for Multiphysics PFC
+
+The PFC framework readily supports multiphysics extensions. As an example, we consider the hydrodynamic phase-field crystal (hydrodynamic PFC) model  [@skogvoll2022hydrodynamic;@qiu2024grain] in three spatial dimensions, which augments the density field $\psi$ with a mesoscopic velocity field $\mathbf{v} \equiv (v_1(\mathbf{x},t),v_2(\mathbf{x},t),v_3(\mathbf{x},t))$:
+\begin{equation}
+\label{eq:hpfc}
+\begin{aligned}
+\partial_t \psi &= \nabla^2\left(\frac{\delta F[\psi]}{\delta \psi}\right) -\mathbf{v}  \cdot \nabla \psi, \\
+\rho \partial_t \mathbf{v} &= \Gamma \nabla^2 \mathbf{v}
+- \Big\langle \psi \nabla\frac{\delta F[\psi]}{\delta \psi} \Big\rangle ,
+\end{aligned}
+\end{equation}
+with $\langle\ \cdot \ \rangle$ a local averaging obtained through a convolution with a Gaussian kernel 
+\begin{equation}\label{eq:coarsegraining}
+\langle \ \cdot\ \rangle(\mathbf{r})=\int_\Omega  \frac{ (\ \cdot\ )\left(\mathbf{r}^{\prime}\right)}{\left(2 \pi a_0^2\right)^{3 / 2}} \exp \left(-\frac{\left(\mathbf{r}-\mathbf{r}^{\prime}\right)^2}{2 a_0^2}\right) d \mathbf{r}^{\prime}.
+\end{equation}
+and $a_0$ the lattice spacing. Note that this operation just translates to a multiplication in the Fourier spectral method owing to the properties of the Fourier transform.
+
+We distribute the fields across four GPUs, assigning one field per device and performing synchronized inter-GPU communication after each time step. This strategy enables handling problems larger than single-GPU memory limits. Benchmark results using four NVIDIA H100 GPUs demonstrate substantial runtime reductions compared to CPU execution on the previously described HPC clusters Capella and Barnard. In particular, for large computational domains where single-GPU simulations become infeasible, significant performance gains are observed; see Fig. \ref{fig:multiGPU}(b). The code snippet below illustrates the MATLAB implementation. 
+
 
 
 ```matlab
@@ -232,6 +224,14 @@ spmd %parallel GPU session (4 GPUs)
     end
 end
 ```
+
+Figure \ref{fig:multiGPU_examples}(b) depicts polycrystalline coarsening within the hydrodynamic PFC framework, presented here as a representative three-dimensional benchmark case.
+
+
+The adopted strategy of distributing different fields across multiple GPUs naturally extends to coarse-grained formulations based on complex amplitudes of the principal Fourier modes  [@salvalaglio2022coarse]. These models are well-suited to pseudo-spectral methods and typically require the simultaneous evolution of tens of coupled complex-valued fields, a setting for which we expect the present parallelization strategy to be particularly effective.
+
+
+
 
 \begin{figure*}[t]
 \centering
