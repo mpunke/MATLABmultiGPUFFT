@@ -2,7 +2,7 @@ Multi-GPU fast Fourier transforms in MATLAB (for large-scale phase-field crystal
 ======================================================
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![View File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://se.mathworks.com/matlabcentral/fileexchange/)
+[![View File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://se.mathworks.com/matlabcentral/fileexchange/183518-matlabmultigpufft)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18670913.svg)](https://doi.org/10.5281/zenodo.18670913)
 
 [GitHub](https://github.com/mpunke/MATLABmultiGPUFFT)
