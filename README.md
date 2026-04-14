@@ -1,4 +1,5 @@
-Multi-GPU fast Fourier transforms in MATLAB \\ for large-scale phase-field crystal simulations
+Multi-GPU fast Fourier transforms in MATLAB
+for large-scale phase-field crystal simulations
 ======================================================
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
