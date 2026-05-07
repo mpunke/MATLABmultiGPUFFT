@@ -1,4 +1,4 @@
-Multi-GPU fast Fourier transforms in MATLAB
+multiGPU-PFC: Multi-GPU fast Fourier transforms in MATLAB
 for large-scale phase-field crystal simulations
 ======================================================
 
