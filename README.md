@@ -29,7 +29,7 @@ singleFFT_multiGPU_2D.m
 singleFFT_multiGPU_3D.m
 ```
 
-* For a 3D pseudo-spectral solver of the hydrodynamic Phase-Field Crystal Equation (underlying fcc symmetry) with additional modeling of elastoc relaxation, resulting in polycrystalline coarsening with as visualized in the Figure 2(b), change directory to `multiGPU_multiPhysics_3D` and run in MATLAB (four NVIDIA GPUs with latest driver updates must be available):
+* For a 3D pseudo-spectral solver of the hydrodynamic Phase-Field Crystal Equation (underlying fcc symmetry) with additional modeling of elastic relaxation, resulting in polycrystalline coarsening with as visualized in the Figure 2(b), change directory to `multiGPU_multiPhysics_3D` and run in MATLAB (four NVIDIA GPUs with latest driver updates must be available):
 
 
 ```matlab
